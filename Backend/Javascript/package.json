@@ -1,0 +1,22 @@
+{
+  "name": "quandinh",
+  "version": "1.0.0",
+  "description": "node server to detect image from client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "javascript",
+    "node",
+    "express",
+    "face-detection"
+  ],
+  "author": "quandinh",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "face-api.js": "^0.22.2"
+  }
+}

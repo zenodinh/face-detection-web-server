@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <link rel="shortcut icon"
+        href="https://lucloi.vn/wp-content/uploads/2020/03/89508239_424747035003603_3855813010312396800_n.jpg"
+        type="image/x-icon">
+    <script src="main.js"></script>
+    <title>Face detection</title>
+</head>
+
+<body>
+
+    <div class="main">
+        <section class="image-input">
+            <form id="form" onsubmit="showImage(event)">
+                <label for="myfile">Select image: </label>
+                <input data-type="image" accept="image/*" type="file" id="myfile" name="myfile">
+                <input type="submit" id="submit" value="Submit">
+            </form>
+        </section>
+
+        <section class="image">
+            <div class="image-show original">
+                <img id="original"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc1MbArOaxmEuA9ybCiGw7dLpCUGbbNqvp2g&usqp=CAU"
+                    alt="Original image">
+            </div>
+
+            <div class="image-show detected">
+                <img id="detected"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc1MbArOaxmEuA9ybCiGw7dLpCUGbbNqvp2g&usqp=CAU"
+                    alt="Detected image">
+            </div>
+        </section>
+
+        <div id="text">
+            "Nothing"
+        </div>
+    </div>
+</body>
+
+</html>
