@@ -1,0 +1,9 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+.DS_Store
+# Node js ignore
+Backend/Javascript/node_modules/
+Backend/Javascript/package-lock.json
