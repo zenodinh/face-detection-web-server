@@ -25,7 +25,7 @@ app.post("/detect", async (req, res) => {
     console.log("detections: ", detections)
     res.status(200).json({
         Code: 200,
-        Message: "Detect face OK"
+        Message: "Detect image successfully"
     })
 })
 
