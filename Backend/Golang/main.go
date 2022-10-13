@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -32,7 +31,7 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		res := response{
 			Code:    200,
-			Message: "Welcome to Golang Face Detection web server\nPlease access http://localhost:8000/detect to detect faces in the picture",
+			Message: "Welcome to Golang Face Detection web server. Please access http://localhost:8000/detect to detect faces in the picture",
 		}
 		_ = json.NewEncoder(w).Encode(res)
 	}).Methods(http.MethodGet)
@@ -91,7 +90,7 @@ func GetImage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger := zap.New(nil)
-	err = DetectImage(filepath.Join(imageFolder, originalImage))
+	_, err = DetectImage(filepath.Join(imageFolder, originalImage))
 	if err != nil {
 		logger.Info("Detect image error: " + err.Error())
 		res := response{
@@ -102,23 +101,13 @@ func GetImage(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewEncoder(w).Encode(res)
 		return
 	}
-	result, err := ioutil.ReadFile(filepath.Join(imageFolder, detectedImage))
-	if err != nil {
-		logger.Info("Can not read file: " + err.Error())
-		res := response{
-			Code:    http.StatusBadRequest,
-			Message: "Can not read detected image file",
-			Error:   err,
-		}
-		_ = json.NewEncoder(w).Encode(res)
-		return
-	}
+	data, _ := os.ReadFile(filepath.Join(imageFolder, detectedImage))
 	w.Header().Set("Content-Type", "application/octet-stream")
 	res := response{
 		Code:    http.StatusOK,
 		Message: "Detect face successfully",
 		Error:   nil,
-		Data:    string(result),
+		Data:    string(data),
 	}
 	_ = json.NewEncoder(w).Encode(res)
 }
