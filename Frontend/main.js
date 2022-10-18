@@ -14,7 +14,7 @@ const showImage = function (event) {
     }
 }
 
-const sendImage = function (event) {
+const sendImage = async function (event) {
     event.preventDefault()
 
     var file = document.getElementById("myfile").files[0]
@@ -23,7 +23,7 @@ const sendImage = function (event) {
         formData.append("image", file)
     }
 
-    fetch("http://localhost:8000/detect", {
+    raw = await fetch("http://localhost:8000/detect", {
         method: "POST",
         headers: {
             "Access-Control-Allow-Origin": "*",
@@ -31,8 +31,7 @@ const sendImage = function (event) {
             "Access-Control-Allow-Headers": "*"
         },
         body: formData
-    }).then(res => res.json()).then(body => {
-        console.log("Message: ", body.Message)
-        document.getElementById("original").src = body.Data
     })
+    let res = await raw.json()
+    document.getElementById("detected").src = res.Data
 }

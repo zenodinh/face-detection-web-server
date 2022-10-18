@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 
 	"github.com/gorilla/mux"
-	"github.com/rs/cors"
 	"go.uber.org/zap"
 )
 
@@ -28,19 +27,14 @@ const detectedImage = "go_detected.jpeg"
 
 func main() {
 	r := mux.NewRouter()
-	handler := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PATCH", "PUT", "OPTIONS"},
-		AllowedHeaders: []string{"X-Requested-With", "Accept, Accept-Language, Content-Type"},
-	}).Handler(r)
-
+	r.Use(CORS)
 	r.HandleFunc("/", Hello).Methods(http.MethodGet)
 	r.HandleFunc("/detect", GetImage).Methods(http.MethodPost)
 
 	port := "8000"
 	fmt.Println("Start server at localhost:" + port)
 
-	log.Fatal(http.ListenAndServe(":"+port, handler))
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
@@ -110,7 +104,7 @@ func GetImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data, _ := os.ReadFile(filepath.Join(imageFolder, detectedImage))
-	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("Content-Type", "application/json")
 	res := response{
 		Code:    http.StatusOK,
 		Message: "Detect face successfully",
@@ -118,4 +112,21 @@ func GetImage(w http.ResponseWriter, r *http.Request) {
 		Data:    string(data),
 	}
 	_ = json.NewEncoder(w).Encode(res)
+}
+
+func CORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Headers", "*")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "*")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		fmt.Println("OK")
+
+		next.ServeHTTP(w, r)
+		return
+	})
 }
