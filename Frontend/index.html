@@ -17,9 +17,9 @@
 
     <div class="main">
         <section class="image-input">
-            <form id="form" onsubmit="showImage(event)">
+            <form id="form" onsubmit="sendImage(event)">
                 <label for="myfile">Select image: </label>
-                <input data-type="image" accept="image/*" type="file" id="myfile" name="myfile">
+                <input data-type="image" accept="image/*" type="file" id="myfile" name="myfile" onchange="showImage(event)">
                 <input type="submit" id="submit" value="Submit">
             </form>
         </section>
@@ -28,19 +28,17 @@
             <div class="image-show original">
                 <img id="original"
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc1MbArOaxmEuA9ybCiGw7dLpCUGbbNqvp2g&usqp=CAU"
+                    width="400px"
                     alt="Original image">
             </div>
 
             <div class="image-show detected">
                 <img id="detected"
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc1MbArOaxmEuA9ybCiGw7dLpCUGbbNqvp2g&usqp=CAU"
+                    width="400px"
                     alt="Detected image">
             </div>
         </section>
-
-        <div id="text">
-            "Nothing"
-        </div>
     </div>
 </body>
 

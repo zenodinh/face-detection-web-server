@@ -51,7 +51,7 @@ def GetImage():
             "Message": "Detect face successfully",
             "Data": str(f.read())
         }))
-        response.headers["Content-Type"] = "application/octet-stream"
+        response.headers["Content-Type"] = "application/json"
         return response
     return {
         "Code": 400,

@@ -1,11 +1,5 @@
-console.log("Buoc 1")
-
 const showImage = function (event) {
     event.preventDefault()
-
-    console.log("Chay khi submit")
-    document.getElementById("text").innerText = "Submit"
-
     var file = document.getElementById("myfile").files[0]
     if (file) {
         console.log("File = ", file.name)
@@ -14,16 +8,31 @@ const showImage = function (event) {
         reader.onload = () => {
             document.getElementById("original").src = reader.result
         }
-        fetch("http://localhost:8000", {
-            method: "GET",
-            mode: "no-cors",
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Credentials": true
-            }
-        }).then(res => console.log("response: ", res)).catch(reason => console.log("Reason: ", reason))
     }
     else {
         console.log("Khong co file")
     }
+}
+
+const sendImage = function (event) {
+    event.preventDefault()
+
+    var file = document.getElementById("myfile").files[0]
+    let formData = new FormData();
+    if (file) {
+        formData.append("image", file)
+    }
+
+    fetch("http://localhost:8000/detect", {
+        method: "POST",
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*"
+        },
+        body: formData
+    }).then(res => res.json()).then(body => {
+        console.log("Message: ", body.Message)
+        document.getElementById("original").src = body.Data
+    })
 }

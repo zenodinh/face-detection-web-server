@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"go.uber.org/zap"
 )
 
@@ -26,22 +28,28 @@ const detectedImage = "go_detected.jpeg"
 
 func main() {
 	r := mux.NewRouter()
+	handler := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PATCH", "PUT", "OPTIONS"},
+		AllowedHeaders: []string{"X-Requested-With", "Accept, Accept-Language, Content-Type"},
+	}).Handler(r)
+
+	r.HandleFunc("/", Hello).Methods(http.MethodGet)
 	r.HandleFunc("/detect", GetImage).Methods(http.MethodPost)
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		res := response{
-			Code:    200,
-			Message: "Welcome to Golang Face Detection web server. Please access http://localhost:8000/detect to detect faces in the picture",
-		}
-		_ = json.NewEncoder(w).Encode(res)
-	}).Methods(http.MethodGet)
 
 	port := "8000"
 	fmt.Println("Start server at localhost:" + port)
 
-	if err := http.ListenAndServe(":"+port, r); err != nil {
-		_ = fmt.Errorf("server listening error: %v", err)
+	log.Fatal(http.ListenAndServe(":"+port, handler))
+}
+
+func Hello(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	res := response{
+		Code:    200,
+		Message: "Welcome to Golang Face Detection web server. Please access http://localhost:8000/detect to detect faces in the picture",
 	}
+	_ = json.NewEncoder(w).Encode(res)
 }
 
 func GetImage(w http.ResponseWriter, r *http.Request) {

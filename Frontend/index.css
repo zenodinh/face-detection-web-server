@@ -13,9 +13,8 @@
 .image {
     display: flex;
     padding: 20px;
-    background-color: aqua;
     width: 100%;
-    gap: 150px;
+    gap: 400px;
 }
 
 .original-image-show {
