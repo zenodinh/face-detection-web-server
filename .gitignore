@@ -114,3 +114,4 @@ dist
 
 Backend/Java/httpserver/target/
 ./Backend/Golang/quandinh
+.vscode/
