@@ -1,5 +1,4 @@
-const showImage = function (event) {
-    event.preventDefault()
+const showImage = function () {
     var file = document.getElementById("myfile").files[0]
     if (file) {
         console.log("File = ", file.name)
@@ -9,7 +8,6 @@ const showImage = function (event) {
             document.getElementById("original").src = reader.result
         }
         var canvas = document.getElementById("detected");
-        canvas.height = canvas.width * (canvas.clientHeight / canvas.clientWidth);
         var fileinput = document.getElementById("myfile");
         var image = new SimpleImage(fileinput);
         image.drawTo(canvas);
@@ -29,30 +27,24 @@ async function draw(x, y, w, h) {
     ctx.stroke();
 }
 
-const sendImage = function (event) {
-    event.preventDefault()
-
-    var file = document.getElementById("myfile").files[0]
+const sendImage = async function () {
+    debugger
+    console.log("Phai vo day chu")
+    var file = document.getElementById("myfile")
     let formData = new FormData();
     if (file) {
         formData.append("image", file)
     }
 
-    fetch("http://localhost:8000", {
-        method: "GET",
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "*",
-            "Access-Control-Allow-Headers": "*"
-        },
-        // body: formData
-    }).then(res => res.json().then(body => {
-        console.log("Body: ", body)
-        draw(100, 100, 100, 100)
-        // for (i = 0; i < body.Data.length; ++i) {
-        //     draw(100, 100, 100, 100)
-        // }
-    }))
+    const rawRes = await fetch("http://localhost:8000/detect", {
+        method: "POST",
+        body: formData
+    })
 
+    const res = await rawRes.json()
+    console.log("response: ", res)
 
+    for (let i = 0; i < res.Data.length; ++i) {
+        draw(res.Data[i].x, res.Data[i].y, res.Data[i].w, res.Data[i].h)
+    }
 }
