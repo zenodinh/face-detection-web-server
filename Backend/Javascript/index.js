@@ -52,7 +52,7 @@ app.post("/detect", upload.single('image'), async (req, res) => {
     await faceapi.nets.ssdMobilenetv1.loadFromDisk(modelFolder)
     const image = await canvas.loadImage(path.join(imageFolder, originalImage));
     const boxes = await faceapi.detectAllFaces(image)
-    // fs.writeFileSync(path.join(imageFolder, detectedImage), image.src)
+    
     res.status(200).json({
         Code: 200,
         Message: "Detect image successfully",
