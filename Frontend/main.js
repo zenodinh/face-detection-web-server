@@ -1,50 +1,44 @@
 const showImage = function () {
-    var file = document.getElementById("myfile").files[0]
-    if (file) {
-        console.log("File = ", file.name)
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-            document.getElementById("original").src = reader.result
-        }
-        var canvas = document.getElementById("detected");
-        var fileinput = document.getElementById("myfile");
-        var image = new SimpleImage(fileinput);
-        image.drawTo(canvas);
-    }
-    else {
-        console.log("Khong co file")
-    }
+    var fileinput = document.getElementById("myfile")
+    var imgcanvas = document.getElementById("inputCanvas");
+    var image = new SimpleImage(fileinput);
+    image.drawTo(imgcanvas);
 }
 
+const showImageOutput = function () {
+    var fileinput = document.getElementById("myfile")
+    var imgcanvas = document.getElementById("outputCanvas");
+    var image = new SimpleImage(fileinput);
+    image.drawTo(imgcanvas);
+}
+
+
 async function draw(x, y, w, h) {
-    var canvas = document.getElementById("detected");
+    var canvas = document.getElementById("outputCanvas");
     let ctx = canvas.getContext("2d");
     ctx.beginPath();
     ctx.rect(x, y, w, h);
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = "white";
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "green";
     ctx.stroke();
 }
 
 const sendImage = async function () {
-    debugger
-    console.log("Phai vo day chu")
+
+    showImageOutput();
     var file = document.getElementById("myfile")
     let formData = new FormData();
-    if (file) {
-        formData.append("image", file)
-    }
+    formData.append("image", file.files[0])
 
     const rawRes = await fetch("http://localhost:8000/detect", {
         method: "POST",
         body: formData
     })
 
-    const res = await rawRes.json()
-    console.log("response: ", res)
+    const res = await rawRes.json();
 
-    for (let i = 0; i < res.Data.length; ++i) {
-        draw(res.Data[i].x, res.Data[i].y, res.Data[i].w, res.Data[i].h)
+    for (let i = 0; i < res.Data.length; i++) {
+        let box = res.Data[i];
+        await draw(box.x, box.y, box.w, box.h)
     }
 }

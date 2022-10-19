@@ -16,20 +16,19 @@
 
 <body>
     <div class="main">
-        <section class="image-input">
-            <input type="file" multiple="false" accept="image/*" id="myfile" onchange="showImage()">
-            <button class="arrow" onclick="sendImage()" id="submit">Detect</button>
-        </section>
-
-        <section class="image">
-            <div class="image-show original">
-                <img id="original" width="400px" alt="Original image">
+            <div class="inputGroup">
+                <canvas id="inputCanvas"></canvas>
+                <p>
+                    Filename
+                    <input type="file" multiple="false" accept="image/*" id="myfile" onchange="showImage()">
+                </p>
             </div>
 
-            <div class="image-show detected">
-                <canvas id="detected"></canvas>
+            <button onclick="sendImage()">Detect</button>
+
+            <div class="outputGroup">
+                <canvas id="outputCanvas"></canvas>
             </div>
-        </section>
     </div>
 </body>
 
