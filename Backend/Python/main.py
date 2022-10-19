@@ -40,16 +40,21 @@ def GetImage():
         grayImage = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
         
         faces = faceCascade.detectMultiScale(grayImage)
-        
+        boxes = []
         for (x,y,w,h) in faces:
             cv.rectangle(image, (x,y), (x+w, y+h), (0, 255, 0), 2)
-            
+            boxes.append({
+             "x": x.item(),
+             "y": y.item(),
+             "w": w.item(),
+             "h": h.item()   
+            })
         cv.imwrite(os.path.join(imageFolder, detectedImage), image)
-        f = open(os.path.join(imageFolder, detectedImage), "rb")
+        
         response = make_response(json.dumps({
             "Code": 200,
             "Message": "Detect face successfully",
-            "Data": str(f.read())
+            "Data": boxes
         }))
         response.headers["Content-Type"] = "application/json"
         return response

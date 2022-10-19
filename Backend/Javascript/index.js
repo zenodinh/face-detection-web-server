@@ -26,6 +26,18 @@ const storage = multer.diskStorage({
     }
 })
 
+generateDrawBoxes = function(boxes) {
+    points = []
+    for (i = 0; i< boxes.length ; ++i) 
+        points.push({
+            x: boxes[i]._box._x,
+            y: boxes[i]._box._y,
+            w: boxes[i]._box._width,
+            h: boxes[i]._box._height
+        })
+    return points
+}
+
 const upload = multer({ storage: storage })
 app.get("/", (req, res) => {
     res.status(200).json({
@@ -40,12 +52,11 @@ app.post("/detect", upload.single('image'), async (req, res) => {
     await faceapi.nets.ssdMobilenetv1.loadFromDisk(modelFolder)
     const image = await canvas.loadImage(path.join(imageFolder, originalImage));
     const boxes = await faceapi.detectAllFaces(image)
-    
     // fs.writeFileSync(path.join(imageFolder, detectedImage), image.src)
     res.status(200).json({
         Code: 200,
         Message: "Detect image successfully",
-        Data: boxes
+        Data: generateDrawBoxes(boxes)
     })
 })
 

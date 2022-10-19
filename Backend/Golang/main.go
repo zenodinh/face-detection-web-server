@@ -18,7 +18,14 @@ type response struct {
 	Code    int
 	Message string
 	Error   error
-	Data    string
+	Data    []Box
+}
+
+type Box struct {
+	X int `json:"x"`
+	Y int `json:"y"`
+	W int `json:"w"`
+	H int `json:"h"`
 }
 
 const imageFolder string = "../images"
@@ -92,7 +99,7 @@ func GetImage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger := zap.New(nil)
-	_, err = DetectImage(filepath.Join(imageFolder, originalImage))
+	rects, err := DetectImage(filepath.Join(imageFolder, originalImage))
 	if err != nil {
 		logger.Info("Detect image error: " + err.Error())
 		res := response{
@@ -103,13 +110,22 @@ func GetImage(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewEncoder(w).Encode(res)
 		return
 	}
-	data, _ := os.ReadFile(filepath.Join(imageFolder, detectedImage))
+	boxes := make([]Box, 0)
+
+	for _, rect := range rects {
+		boxes = append(boxes, Box{
+			X: rect.Min.X,
+			Y: rect.Min.Y,
+			W: rect.Dx(),
+			H: rect.Dy(),
+		})
+	}
 	w.Header().Set("Content-Type", "application/json")
 	res := response{
 		Code:    http.StatusOK,
 		Message: "Detect face successfully",
 		Error:   nil,
-		Data:    string(data),
+		Data:    boxes,
 	}
 	_ = json.NewEncoder(w).Encode(res)
 }
@@ -127,6 +143,5 @@ func CORS(next http.Handler) http.Handler {
 		fmt.Println("OK")
 
 		next.ServeHTTP(w, r)
-		return
 	})
 }
